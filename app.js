@@ -16,6 +16,7 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 const app = express();
 
 app.set('view engine', 'ejs');
+app.set('views', './views');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
@@ -29,7 +30,7 @@ app.use(session({
 }));
 
 // Database connection
-const mongoURI = process.env.MONGODB_URI;
+const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/blogDB";
 mongoose.connect(mongoURI);
 
 // User Schema
@@ -280,7 +281,7 @@ app.get("/contact", async (req, res) => {
 });
 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
   console.log(`Server started on port ${PORT}`);
