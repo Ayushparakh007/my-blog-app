@@ -1,4 +1,93 @@
 <%- include("partials/header"); -%>
-    <h1>Contact</h1>
-    <p> <%= contactContent %> </p>
+<style>
+  .contact-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+  }
+  .contact-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .contact-subtitle {
+    font-size: 16px;
+    color: #7f8c8d;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .contact-info {
+    background: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 16px;
+  }
+  .contact-item-icon {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #3498db;
+    min-width: 25px;
+  }
+  .contact-item-text {
+    color: #2c3e50;
+  }
+  .contact-item-text a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .contact-item-text a:hover {
+    text-decoration: underline;
+  }
+  .contact-note {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-top: 30px;
+    font-style: italic;
+  }
+</style>
+
+<div class="contact-container">
+  <h1 class="contact-title">Get In Touch</h1>
+  <p class="contact-subtitle">Have a question, feedback, or collaboration idea? I'd love to hear from you!</p>
+
+  <div class="contact-info">
+    <div class="contact-item">
+      <span class="contact-item-icon">📧</span>
+      <span class="contact-item-text">
+        <strong>Email:</strong> 
+        <a href="mailto:ayushparakh2004@gmail.com">ayushparakh2004@gmail.com</a>
+      </span>
+    </div>
+
+    <div class="contact-item">
+      <span class="contact-item-icon">🔗</span>
+      <span class="contact-item-text">
+        <strong>LinkedIn:</strong> 
+        <a href="https://www.linkedin.com/in/ayush-parakh-263430251/" target="_blank">linkedin.com/in/ayush-parakh</a>
+      </span>
+    </div>
+
+    <div class="contact-item">
+      <span class="contact-item-icon">🐙</span>
+      <span class="contact-item-text">
+        <strong>GitHub:</strong> 
+        <a href="https://github.com/Ayushparakh007" target="_blank">github.com/Ayushparakh007</a>
+      </span>
+    </div>
+  </div>
+
+  <p class="contact-note">Feel free to send a message — I usually reply within 24–48 hours.</p>
+</div>
+
 <%- include("partials/footer"); -%>

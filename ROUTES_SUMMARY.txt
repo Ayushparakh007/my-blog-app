@@ -1,0 +1,207 @@
+================================================================================
+                    AUTHENTICATION ROUTES STRUCTURE
+================================================================================
+
+PUBLIC ROUTES (No Login Required)
+├─ GET  /                      → Home page with all posts
+├─ GET  /about                 → About page  
+├─ GET  /contact               → Contact page
+├─ GET  /posts/:postId         → View individual post
+└─ GET  /logout                → Destroy session (works for all users)
+
+================================================================================
+USER AUTHENTICATION ROUTES
+================================================================================
+
+GET  /user/login               → User login form
+POST /user/login               → Process user login
+     ✓ Validates role = 'user'
+     ✓ Redirects to: /
+     ✗ Rejects admin accounts
+
+GET  /user/register            → User registration form
+POST /user/register            → Process user registration
+     ✓ Creates role = 'user' account
+     ✓ Validates password confirmation
+     ✓ Hashes password with bcrypt
+     ✗ Does NOT require admin secret
+
+================================================================================
+ADMIN AUTHENTICATION ROUTES
+================================================================================
+
+GET  /admin/login              → Admin login form
+POST /admin/login              → Process admin login
+     ✓ Validates role = 'admin'
+     ✓ Redirects to: /admin
+     ✗ Rejects user accounts
+
+GET  /admin/register           → Admin registration form
+POST /admin/register           → Process admin registration
+     ✓ Creates role = 'admin' account
+     ✓ Validates password confirmation
+     ✓ REQUIRES admin secret key from .env
+     ✓ Hashes password with bcrypt
+
+================================================================================
+PROTECTED USER ROUTES (Login as User Required)
+================================================================================
+
+GET  /profile                  → User profile page
+GET  /compose                  → Create post form
+POST /compose                  → Submit new post
+
+================================================================================
+PROTECTED ADMIN ROUTES (Login as Admin Required)
+================================================================================
+
+GET  /admin                    → Admin dashboard (post management)
+GET  /posts/:postId/edit       → Edit post form
+POST /posts/:postId/edit       → Submit edited post
+POST /posts/:postId/delete     → Delete post
+
+================================================================================
+FLOW DIAGRAMS
+================================================================================
+
+USER FLOW:
+┌──────────────────┐
+│  /user/register  │  (New User)
+└────────┬─────────┘
+         │ POST (create account)
+         ▼
+┌──────────────────┐
+│  Create in DB    │  (role: 'user')
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  /user/login     │
+└────────┬─────────┘
+         │ POST (authenticate)
+         ▼
+┌──────────────────┐
+│  Session Start   │  (req.session populated)
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   Redirect /     │  (Home page)
+└──────────────────┘
+
+ADMIN FLOW:
+┌──────────────────┐
+│ /admin/register  │  (New Admin)
+└────────┬─────────┘
+         │ POST (need admin secret)
+         │
+         ▼
+┌──────────────────────────┐
+│ Verify Admin Secret      │
+│ (compare .env ADMIN_SECRKET)
+└────────┬─────────────────┘
+         │ Secret valid?
+         ├─ YES → Continue
+         └─ NO → Error message
+         │
+         ▼
+┌──────────────────┐
+│  Create in DB    │  (role: 'admin')
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  /admin/login    │
+└────────┬─────────┘
+         │ POST (authenticate)
+         ▼
+┌──────────────────┐
+│  Session Start   │  (req.session populated)
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Redirect /admin  │  (Admin Dashboard)
+└──────────────────┘
+
+================================================================================
+ENVIRONMENT VARIABLES (.env)
+================================================================================
+
+MONGODB_URI=mongodb://localhost:27017/blogDB
+SESSION_SECRET=myblog-super-secret-key-2024-xyz789abc123
+ADMIN_SECRET=admin-secret-key-2024          ← Used for admin registration
+PORT=3000
+NODE_ENV=development
+
+================================================================================
+DEMO ACCOUNTS (Created Automatically on Startup)
+================================================================================
+
+USER ACCOUNT:
+  Username: user
+  Password: user123
+  Role: user
+  Login at: /user/login
+
+ADMIN ACCOUNT:
+  Username: admin
+  Password: admin123
+  Role: admin
+  Login at: /admin/login
+  Secret (for registration): admin-secret-key-2024
+
+================================================================================
+KEY VALIDATION LOGIC
+================================================================================
+
+USER LOGIN:
+  1. Find user by username
+  2. Check if user exists
+  3. Check if user.role === 'user'  ← ROLE CHECK
+  4. Compare password with bcrypt
+  5. Create session
+  6. Redirect to /
+
+ADMIN LOGIN:
+  1. Find user by username
+  2. Check if user exists
+  3. Check if user.role === 'admin'  ← ROLE CHECK
+  4. Compare password with bcrypt
+  5. Create session
+  6. Redirect to /admin
+
+ADMIN REGISTRATION:
+  1. Get adminSecret from form
+  2. Compare with process.env.ADMIN_SECRET  ← SECRET CHECK
+  3. Validate passwords match
+  4. Hash password with bcrypt (10 rounds)
+  5. Create user with role: 'admin'
+  6. Save to MongoDB
+
+================================================================================
+DIRECTORY STRUCTURE
+================================================================================
+
+views/
+├── user/
+│   ├── login.ejs       ← User login page
+│   └── register.ejs    ← User registration page
+├── admin/
+│   ├── login.ejs       ← Admin login page
+│   └── register.ejs    ← Admin registration page
+├── partials/
+│   ├── header.ejs      ← Shared header (navigation)
+│   └── footer.ejs      ← Shared footer
+├── home.ejs            ← Home page
+├── compose.ejs         ← Compose post
+├── post.ejs            ← View single post
+├── edit.ejs            ← Edit post (admin only)
+├── profile.ejs         ← User profile
+├── admin.ejs           ← Admin dashboard
+├── about.ejs           ← About page
+├── contact.ejs         ← Contact page
+├── login.ejs           ← DEPRECATED (use /user/login or /admin/login)
+└── register.ejs        ← DEPRECATED (use /user/register or /admin/register)
+
+================================================================================
